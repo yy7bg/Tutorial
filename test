@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Store Data</title>
+    <link rel="stylesheet" type="text/css" href="index.css">
+    <script src="truffle-contract.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/angular.js/1.6.3/angular.min.js"></script>
+    <script src="web3.min.js"></script>
+    <script src="store.js"></script>
+    <script src="app.js"></script>
+    <script>
+        function power(roleType) {
+            var aResult = [];
+            var oDiv = [];
+            var oLog = [];
+            var aEle=document.getElementsByTagName('div');
+
+            for(var i = 0; i < aEle.length; i++){
+                if(aEle[i].className === 'wrapper'){
+                    aResult.push(aEle[i]);
+                } else if(aEle[i].className === 'container') {
+                    oDiv.push(aEle[i]);
+                } else if(aEle[i].className === 'LOGSIG') {
+                    oLog.push(aEle[i]);
+                }
+            }
+
+            var aA = aResult[0].getElementsByTagName('a');
+
+            aResult[0].style.display='flex';
+            oLog[0].style.display='none';
+            if(Number(roleType) === 0) {
+                oDiv[0].style.display='flex';
+                aA[2].style.display='none';
+                aA[3].style.display='none';
+            } else if(Number(roleType) === 1) {
+                oDiv[1].style.display='flex';
+                aA[0].style.display='none';
+            }
+        }
+
+        window.onload = function() {
+            var aResult = [];
+            var oDiv = [];
+            var aEle=document.getElementsByTagName('div');
+            for(var i = 0; i < aEle.length; i++){
+                if(aEle[i].className === 'wrapper'){
+                    aResult.push(aEle[i]);
+                } else if(aEle[i].className === 'container') {
+                    oDiv.push(aEle[i]);
+                }
+            }
+            var oWrapper = aResult[0];
+            var aA = oWrapper.getElementsByTagName('a');
+
+            for(var i = 0; i < aA.length; i++)
+            {
+                aA[i].index=i;
+                aA[i].onclick=function () {
+                    for(var j = 0; j < oDiv.length; j++)
+                    {
+                        oDiv[j].style.display='none';
+                    }
+                    oDiv[this.index].style.display='flex';
+                };
+            }
+        };
+    </script>
+</head>
+
+<body ng-app='myApp' ng-controller='myCtrl'>
+
+    <div class="menu" id="menu">
+        <li><a href="#">ABOUT US</a></li>
+        <li><a href="#">OUR WORK</a></li>
+        <li><a href="#">CONTACT US</a></li>
+    </div>
+
+    <div class="LOGSIG">
+        <div class="switch">
+            <span id='login' class='active'>Login</span><span>/</span><span id='signup'>Sign Up</span>
+        </div>
+        <form id='loginform'>
+        Email: <input type="text" ng-model='emailL'> <br> 
+        Password: <input type="password" ng-model='passwordL'> <br>
+        Role Type:
+        <div style="display: flex; width: 300px;">
+            <label for="CommonU1">Common User</label>
+            <input type="radio" name="roleTypeL" class="choose" id="CommonU1" ng-model='roleTypeL' value='0'/>
+            <label for="CloudU1">Cloud User</label>
+            <input type="radio" name="roleTypeL" class="choose" id="CloudU1" ng-model='roleTypeL' value='1'/>
+        </div>
+        <br>
+            <!-- <script type="text/javascript">
+                function check1() {
+                    var objFile = document.getElementById("fileId1");
+                    if(objFile.value == "") {
+                        alert("不能空")
+                    }
+                    var files = $('#fileId1').prop('files'); //获取到文件列表
+                    console.log(files.length);
+                    if(files.length == 0) {
+                        alert('请选择文件');
+                    } else {
+                        for(var i = 0; f = files[i]; i++) {
+                            var reader = new FileReader(); //新建一个FileReader
+                            reader.readAsText(files[i], "UTF-8"); //读取文件
+                            reader.onload = function(evt) { //读取完文件之后会回来这里
+                                var fileString = evt.target.result; // 读取文件内容
+                                console.log(fileString)
+                            }
+                        }
+                    }
+                }
+                function check2() {
+                    var objFile = document.getElementById("fileId2");
+                    if(objFile.value == "") {
+                        alert("不能空")
+                    }
+                    var files = $('#fileId2').prop('files'); //获取到文件列表
+                    console.log(files.length);
+                    if(files.length == 0) {
+                        alert('请选择文件');
+                    } else {
+                        for(var i = 0; f = files[i]; i++) {
+                            var reader = new FileReader(); //新建一个FileReader
+                            reader.readAsText(files[i], "UTF-8"); //读取文件
+                            reader.onload = function(evt) { //读取完文件之后会回来这里
+                                var fileString = evt.target.result; // 读取文件内容
+                                console.log(fileString)
+                            }
+                        }
+                    }
+                }
+            </script> -->
+        <button ng-click="log()">login</button>
+        </form>
+
+        <form id='signform'>
+        Email: <input type="text" ng-model='emailS'> <br> 
+        Password: <input type="password" ng-model='passwordS'> <br>
+        Role Type:
+        <div style="display: flex; width: 300px;">
+            <label for="CommonU2">Common User</label>
+            <input type="radio" name="roleTypeS" id="CommonU2" class="choose" ng-model='roleTypeS' value='0'>
+            <label for="CloudU2">Cloud User</label>
+            <input type="radio" name="roleTypeS" id="CloudU2" class="choose" ng-model='roleTypeS' value='1'>
+        </div>
+        <br>
+        <button ng-click="sig()">sign</button>
+        </form>
+
+    </div>
+
+    <div class="bubble">
+        <div class="line">
+            <div class="square" id="square">H</div>
+            <div class="square">e</div>
+            <div class="square">l</div>
+            <div class="square">l</div>
+            <div class="square">o</div>
+            <div class="square">~</div>
+        </div>
+        <div class="line">
+            <div class="square">W</div>
+            <div class="square">O</div>
+            <div class="square">R</div>
+            <div class="square">L</div>
+            <div class="square">D</div>
+        </div>
+    </div>
+
+    <div class="wrapper" style="display: none;">
+        <a href="#">Common Users</a>
+        <a href="#">All Data Unstored</a>
+        <a href="#">Cloud Users For Accepting</a>
+        <a href="#">Cloud Users For Submitting</a>
+    </div>
+    <div style="display: flex;">
+        <div class="container" style="display: none;">
+            <div style="margin-left: 20px;">
+                <label for="name" class="col-lg-2 control-label">Name</label>
+                <input id="name" type="text">
+
+                <label for="data" class="col-lg-2 control-label">Data</label>
+                <input id="data" type="text">
+
+                <label for="cost" class="col-lg-2 control-label">Cost</label>
+                <input id="cost" type="text">
+
+                <button id="addData">Add Data</button>
+            </div>
+            <div>
+                <h1>All Data Info</h1>
+                <div id="allData"></div>
+            </div>
+        </div>
+
+        <div class="container" style="display: none;">
+            <div id="unSotred"><h1>All Unstored Data Info</h1></div>
+        </div>
+            
+        <div class="container" style="display: none; margin-left: 20px;">
+            <div>
+                <label for="dataId" class="col-lg-2 control-label">Data Id</label>
+                <input id="dataId" type="text">
+
+                <label for="deposit" class="col-lg-2 control-label">Deposit</label>
+                <input id="deposit" type="text">
+
+                <button id="storeData">Accept Data</button>
+            </div>
+            <div>
+                <h1>All Stored Data Info</h1>
+
+                <div id="storedData"></div>
+            </div>
+        </div>
+
+        <div class="container" style="display: none; margin-left: 20px;">
+            <div>
+                <label for="dataID" class="col-lg-2 control-label">Data Id</label>
+                <input id="dataID" type="text">
+
+                <label for="content" class="col-lg-2 control-label">Stored Content</label>
+                <input id="content" type="text">
+
+                <button id="submitData">Submit Data</button>
+            </div>
+            <div>
+                <h1>Submit Info</h1>
+
+                <div id="submitInfo"></div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="contract.js"></script>
+
+</body>
+
+<script>
+    function power(roleType) {
+        var aResult = [];
+        var oDiv = [];
+        var oLog = [];
+        var aEle = document.getElementsByTagName('div');
+
+        for (var i = 0; i < aEle.length; i++) {
+            if (aEle[i].className === 'wrapper') {
+                aResult.push(aEle[i]);
+            } else if (aEle[i].className === 'container') {
+                oDiv.push(aEle[i]);
+            } else if (aEle[i].className === 'LOGSIG') {
+                oLog.push(aEle[i]);
+            }
+        }
+
+        var aA = aResult[0].getElementsByTagName('a');
+
+        aResult[0].style.display = 'flex';
+        oLog[0].style.display = 'none';
+        if (Number(roleType) === 0) {
+            oDiv[0].style.display = 'flex';
+            aA[2].style.display = 'none';
+            aA[3].style.display = 'none';
+        } else if (Number(roleType) === 1) {
+            oDiv[1].style.display = 'flex';
+            aA[0].style.display = 'none';
+        }
+    }
+
+    window.onload = function () {
+
+        let square = document.getElementsByClassName('square');
+
+        for (let i = 0; i < square.length; i++) {
+            square[i].addEventListener('mouseenter', function () {
+                this.classList.add("rubberBand");
+                this.addEventListener("animationend", function () {
+                    this.classList.remove("rubberBand");
+                }, false);
+            })
+        }
+
+        var aResult = [];
+        var oDiv = [];
+        var aEle = document.getElementsByTagName('div');
+        for (var i = 0; i < aEle.length; i++) {
+            if (aEle[i].className === 'wrapper') {
+                aResult.push(aEle[i]);
+            } else if (aEle[i].className === 'container') {
+                oDiv.push(aEle[i]);
+            }
+        }
+        var oWrapper = aResult[0];
+        var aA = oWrapper.getElementsByTagName('a');
+
+        for (var i = 0; i < aA.length; i++) {
+            aA[i].index = i;
+            aA[i].onclick = function () {
+                for (var j = 0; j < oDiv.length; j++) {
+                    oDiv[j].style.display = 'none';
+                }
+                oDiv[this.index].style.display = 'flex';
+            };
+        }
+    };
+
+    $('#login').click(function () {
+        $('.switch span').removeClass('active');
+        $(this).addClass('active');
+
+        $(this).parents('.LOGSIG').removeClass('signup');
+        $(this).parents('.LOGSIG').addClass('login');
+    })
+
+    $('#signup').click(function () {
+        $('.switch span').removeClass('active');
+        $(this).addClass('active');
+
+        $(this).parents('.LOGSIGt').removeClass('login');
+        $(this).parents('.LOGSIG').addClass('signup');
+    })
+
+    $('.input input').on('focus', function () {
+        $(this).parent().addClass('focus');
+    })
+
+    $('.input input').on('blur', function () {
+        if ($(this).val() === '')
+            $(this).parent().removeClass('focus');
+    })
+
+    // function validate() {
+    //     var pw1 = document.getElementById("password").value;
+    //     var pw2 = document.getElementById("password_again").value;
+    //     if (pw1 == pw2) {
+    //         document.getElementById("tip").innerHTML = "<font color='green'>√</font>";
+    //         document.getElementById("signform").disabled = false;
+    //     }
+    //     else {
+    //         document.getElementById("tip").innerHTML = "<font color='red'>两次密码不相同</font>";
+    //         document.getElementById("signform").disabled = true;
+    //     }
+    // }
+</script>
+<script src="contract.js"></script>
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+
+</html>
